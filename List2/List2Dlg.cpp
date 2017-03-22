@@ -741,38 +741,38 @@ void CList2Dlg::OnBnClickedRadio3()
 		AfxMessageBox(_T("读取数据集失败"));
 		return;
 	}
-	CString str1;
-	CString str2;
+	CString str;
+	/*CString str2;
 	CString str3;
 
 	CString s1;
 	CString s2 = _T("\r\n");
-	CString s3;
-	int ii = 0;
+	CString s3;*/
+	int i = 0;
 	while (row = mysql_fetch_row(result))
 	{
-		str1.Format(_T("%s"), row[0]);
-		m_list2.InsertItem(ii, str1);
-		str2.Format(_T("%s"), row[1]);
-		int jj = 1;
-		m_list2.SetItemText(ii, jj, str2);
+		str.Format(_T("%s"), row[0]);
+		m_list2.InsertItem(i, str);
+		str.Format(_T("%s"), row[1]);
+		int j = 1;
+		m_list2.SetItemText(i, j, str);
 
-		str3 = str1 + "    " + str2;
+		/*str3 = str1 + "    " + str2;
 		SetDlgItemText(IDC_EDIT_XIANSHI, str3);
 
 		m_xianshi.SetSel(0, -1);
 		GetDlgItem(IDC_EDIT_XIANSHI)->GetWindowText(s1);
 		s1 = s1 + s2;
-		//SetDlgItemText(IDC_EDIT_XIANSHI, s1);
+		//SetDlgItemText(IDC_EDIT_XIANSHI, s1);*/
 
-		ii++;
+		i++;
 
 
 	}
-	GetDlgItem(IDC_EDIT_XIANSHI)->GetWindowText(s3);
+	/*GetDlgItem(IDC_EDIT_XIANSHI)->GetWindowText(s3);
 	s3 = s1 + s3;
 	m_xianshi.ReplaceSel(s3);
-	UpdateData(FALSE);
+	UpdateData(FALSE);*/
 
 }
 
