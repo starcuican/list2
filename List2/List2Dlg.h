@@ -56,4 +56,17 @@ public:
 	CEdit M_EDIT;
 	afx_msg void OnNMDblclkList1(NMHDR *pNMHDR, LRESULT *pResult);
 	afx_msg void OnBnClickedButton1();
+	afx_msg void OnIdok();
+	afx_msg void OnBnClickedBtnSelect();
+	CListCtrl m_list2;
+	CEdit m_xianshi;
+	afx_msg void OnBnClickedButton2();
+	afx_msg void OnBnClickedRadio3();
+	CButton m_id1;
+//	int m_name1;
+//	int m_num1;
+	CButton m_name1;
+	CButton m_num1;
+	afx_msg void OnBnClickedRadio1();
+	afx_msg void OnBnClickedRadio2();
 };

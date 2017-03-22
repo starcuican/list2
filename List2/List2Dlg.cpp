@@ -58,6 +58,8 @@ CList2Dlg::CList2Dlg(CWnd* pParent /*=NULL*/)
 	: CDialogEx(IDD_LIST2_DIALOG, pParent)
 	//, m_listmsg(_T(""))
 	//, m_msg(_T(""))
+	//, m_name1(0)
+	//, m_num1(0)
 {
 	m_hIcon = AfxGetApp()->LoadIcon(IDR_MAINFRAME);
 }
@@ -73,6 +75,11 @@ void CList2Dlg::DoDataExchange(CDataExchange* pDX)
 	//  DDX_Control(pDX, IDC_LIST_MSG, m_listmsg);
 	DDX_Control(pDX, IDC_LIST1, m_listmsg);
 	DDX_Control(pDX, IDC_EDIT2, M_EDIT);
+	DDX_Control(pDX, IDC_LIST2, m_list2);
+	DDX_Control(pDX, IDC_EDIT_XIANSHI, m_xianshi);
+	DDX_Control(pDX, IDC_RADIO1, m_id1);
+	DDX_Control(pDX, IDC_RADIO2, m_name1);
+	DDX_Control(pDX, IDC_RADIO3, m_num1);
 }
 
 BEGIN_MESSAGE_MAP(CList2Dlg, CDialogEx)
@@ -89,6 +96,12 @@ BEGIN_MESSAGE_MAP(CList2Dlg, CDialogEx)
 	ON_EN_KILLFOCUS(IDC_EDIT2, &CList2Dlg::OnEnKillfocusEdit2)
 	ON_NOTIFY(NM_DBLCLK, IDC_LIST1, &CList2Dlg::OnNMDblclkList1)
 	ON_BN_CLICKED(IDC_BUTTON1, &CList2Dlg::OnBnClickedButton1)
+	ON_COMMAND(IDOK, &CList2Dlg::OnIdok)
+	ON_BN_CLICKED(IDC_BTN_SELECT, &CList2Dlg::OnBnClickedBtnSelect)
+	ON_BN_CLICKED(IDC_BUTTON2, &CList2Dlg::OnBnClickedButton2)
+	ON_BN_CLICKED(IDC_RADIO3, &CList2Dlg::OnBnClickedRadio3)
+	ON_BN_CLICKED(IDC_RADIO1, &CList2Dlg::OnBnClickedRadio1)
+	ON_BN_CLICKED(IDC_RADIO2, &CList2Dlg::OnBnClickedRadio2)
 END_MESSAGE_MAP()
 
 
@@ -130,7 +143,10 @@ BOOL CList2Dlg::OnInitDialog()
 	m_listmsg.InsertColumn(1, _T("Name"), LVCFMT_LEFT, 100, 1);
 	m_listmsg.InsertColumn(2, _T("Num"), LVCFMT_LEFT, 100, 2);
 	M_EDIT.ShowWindow(SW_HIDE);
-	
+	m_list2.SetExtendedStyle(LVS_EX_FLATSB | LVS_EX_FULLROWSELECT | LVS_EX_HEADERDRAGDROP | LVS_EX_ONECLICKACTIVATE | LVS_EX_GRIDLINES);
+	m_list2.InsertColumn(0, _T("数据1"), LVCFMT_LEFT, 100, 0);
+	m_list2.InsertColumn(1, _T("数据2"), LVCFMT_LEFT, 100, 1);
+	m_list2.InsertColumn(2, _T(" "), LVCFMT_LEFT, 100, 2);
 	return TRUE;  // 除非将焦点设置到控件，否则返回 TRUE
 }
 
@@ -284,7 +300,7 @@ void CList2Dlg::OnBnClickedBtnCreate()
 	}
 
 	//向表中插入数据
-	sqlstr = "INSERT INTO sssss(user_name) VALUES('学    校'),('年级数量'),('班级数量'),('老师人数'),('学生人数');";
+	sqlstr = "INSERT INTO sssss(user_name) VALUES('学校'),('年级数量'),('班级数量'),('老师人数'),('学生人数');";
 	if (0 == mysql_query(&m_sqlconn, sqlstr.c_str()))
 	{
 		//AfxMessageBox(_T("插入数据成功"));
@@ -392,7 +408,7 @@ void CList2Dlg::OnBnClickedBtnFond()
 		GetDlgItem(IDC_EDIT_MSG)->SetWindowTextA(s1);*/
 		
 
-
+		//m_listmsg.DeleteAllItems();
 	}
 	else
 	{
@@ -471,7 +487,7 @@ void CList2Dlg::OnEnKillfocusEdit2()
 {
 	// TODO: 在此添加控件通知处理程序代码
 	
-	M_EDIT.GetWindowText(tem);//得到用户输入的新内容
+	M_EDIT.GetWindowText(tem);//得到用户输入的新内容---m_edit单元编辑框的成员
 	m_listmsg.SetItemText(m_Row, m_Col, tem);//设置编辑框新内容
 	M_EDIT.ShowWindow(SW_HIDE);
 	
@@ -565,4 +581,275 @@ void CList2Dlg::OnBnClickedBtnSmting()
 	mysql_close(&m_sqlconn);
 	return;
 	}*/
+}
+
+void CList2Dlg::OnIdok()
+{
+	// TODO: 在此添加命令处理程序代码
+}
+
+CString abc;
+char buf[1024];
+void CList2Dlg::OnBnClickedBtnSelect()
+{
+
+	m_id1.ShowWindow(SW_SHOW);
+	m_name1.ShowWindow(SW_SHOW);
+	m_num1.ShowWindow(SW_SHOW);
+	// TODO: 在此添加控件通知处理程序代码
+	/*char * ch_select;
+	GetDlgItem(IDC_EDIT_SELECT)->GetWindowText(abc);
+
+	sprintf_s(buf, "SELECT user_id,user_name from sssss where user_second_sum = '%s'", abc);
+	if (0 == mysql_query(&m_sqlconn, buf))
+	{
+		AfxMessageBox(_T("查询数据成功"));
+	}
+	else
+	{
+		AfxMessageBox(_T("查询数据失败"));
+		CString  ee = mysql_error(&m_sqlconn);
+		AfxMessageBox(ee);
+		mysql_close(&m_sqlconn);
+		return;
+	}
+	if (!(result = mysql_use_result(&m_sqlconn)))
+	{
+		AfxMessageBox(_T("读取数据集失败"));
+		return;
+	}
+	CString str1;
+	CString str2;
+	CString str3;
+
+	CString s1;
+	CString s2 = _T("\r\n");
+	CString s3;
+	int ii = 0;
+	while (row = mysql_fetch_row(result))
+	{
+		str1.Format(_T("%s"), row[0]);
+		m_list2.InsertItem(ii, str1);
+		str2.Format(_T("%s"), row[1]);
+		int jj = 1;
+		m_list2.SetItemText(ii, jj, str2);
+
+		str3 = str1 + "    " + str2;
+		SetDlgItemText(IDC_EDIT_XIANSHI, str3);
+
+		m_xianshi.SetSel(0, -1);
+		GetDlgItem(IDC_EDIT_XIANSHI)->GetWindowText(s1);
+		s1 = s1 + s2;
+		//SetDlgItemText(IDC_EDIT_XIANSHI, s1);
+		
+		ii++;
+	
+
+	}
+	GetDlgItem(IDC_EDIT_XIANSHI)->GetWindowText(s3);
+	s3 = s1 + s3;
+	m_xianshi.ReplaceSel(s3);
+	UpdateData(FALSE);*/
+
+	/*SetDlgItemText(IDC_LIST2, str1);
+	SetDlgItemText(IDC_LIST2, str2);*/
+	
+	//SetDlgItemText(IDC_LIST2, buf);
+
+	/*GetDlgItem(IDC_EDIT_SELECT)->GetWindowText(abc);
+	ch_select = "SELECT user_id, user_name from sssss where user_second_sum = '%s'", abc;
+
+	if (0 != mysql_real_query(&m_sqlconn, "SELECT user_id, user_name from sssss where user_second_sum = '%s'", (UINT)strlen(ch_select)))
+	{
+		AfxMessageBox(_T("查询数据成功"));
+	}
+	else
+	{
+		AfxMessageBox(_T("查询数据失败"));
+		CString  ee = mysql_error(&m_sqlconn);
+		AfxMessageBox(ee);
+		mysql_close(&m_sqlconn);
+		return;
+	}
+	CString str1;
+	int ii = 0;
+	while (row = mysql_fetch_row(result))
+
+	{
+		str1.Format(_T("%s"), row[0]);
+		m_list2.InsertItem(ii, str1);
+		str1.Format(_T("%s"), row[1]);
+		int jj = 1;
+		m_listmsg.SetItemText(ii, jj, str1);
+		ii++;
+
+	}
+	{
+	}*/
+	/*GetDlgItem(IDC_EDIT_SELECT)->GetWindowText(abc);
+
+	sprintf_s(bBuf,"SELECT user_id,user_name from sssss where user_second_sum = '%s'",abc);
+	if (0 == mysql_query(&m_sqlconn, buf))
+	{
+		AfxMessageBox(_T("查询数据成功"));
+	}
+	else
+	{
+		AfxMessageBox(_T("查询数据失败"));
+		CString  ee = mysql_error(&m_sqlconn);
+		AfxMessageBox(ee);
+		mysql_close(&m_sqlconn);
+		return;
+	}
+	SetDlgItemText(IDC_LIST2, buf);*/
+}
+
+
+void CList2Dlg::OnBnClickedButton2()
+{
+	// TODO: 在此添加控件通知处理程序代码
+	m_id1.ShowWindow(SW_HIDE);
+	m_name1.ShowWindow(SW_HIDE);
+	m_num1.ShowWindow(SW_HIDE);
+	m_list2.DeleteAllItems();
+}
+
+
+
+
+void CList2Dlg::OnBnClickedRadio3()
+{
+	// TODO: 在此添加控件通知处理程序代码
+	char * ch_select;
+	GetDlgItem(IDC_EDIT_SELECT)->GetWindowText(abc);
+
+	sprintf_s(buf, "SELECT user_id,user_name from sssss where user_second_sum = '%s'", abc);
+	if (0 == mysql_query(&m_sqlconn, buf))
+	{
+		AfxMessageBox(_T("查询数据成功"));
+	}
+	else
+	{
+		AfxMessageBox(_T("查询数据失败"));
+		CString  ee = mysql_error(&m_sqlconn);
+		AfxMessageBox(ee);
+		mysql_close(&m_sqlconn);
+		return;
+	}
+	if (!(result = mysql_use_result(&m_sqlconn)))
+	{
+		AfxMessageBox(_T("读取数据集失败"));
+		return;
+	}
+	CString str1;
+	CString str2;
+	CString str3;
+
+	CString s1;
+	CString s2 = _T("\r\n");
+	CString s3;
+	int ii = 0;
+	while (row = mysql_fetch_row(result))
+	{
+		str1.Format(_T("%s"), row[0]);
+		m_list2.InsertItem(ii, str1);
+		str2.Format(_T("%s"), row[1]);
+		int jj = 1;
+		m_list2.SetItemText(ii, jj, str2);
+
+		str3 = str1 + "    " + str2;
+		SetDlgItemText(IDC_EDIT_XIANSHI, str3);
+
+		m_xianshi.SetSel(0, -1);
+		GetDlgItem(IDC_EDIT_XIANSHI)->GetWindowText(s1);
+		s1 = s1 + s2;
+		//SetDlgItemText(IDC_EDIT_XIANSHI, s1);
+
+		ii++;
+
+
+	}
+	GetDlgItem(IDC_EDIT_XIANSHI)->GetWindowText(s3);
+	s3 = s1 + s3;
+	m_xianshi.ReplaceSel(s3);
+	UpdateData(FALSE);
+
+}
+
+
+void CList2Dlg::OnBnClickedRadio1()
+{
+	// TODO: 在此添加控件通知处理程序代码
+	char * ch_select;
+	GetDlgItem(IDC_EDIT_SELECT)->GetWindowText(abc);
+
+	sprintf_s(buf, "SELECT user_name,user_second_sum from sssss where user_id = '%s'", abc);
+	if (0 == mysql_query(&m_sqlconn, buf))
+	{
+		AfxMessageBox(_T("查询数据成功"));
+	}
+	else
+	{
+		AfxMessageBox(_T("查询数据失败"));
+		CString  ee = mysql_error(&m_sqlconn);
+		AfxMessageBox(ee);
+		mysql_close(&m_sqlconn);
+		return;
+	}
+
+	if (!(result = mysql_use_result(&m_sqlconn)))
+	{
+		AfxMessageBox(_T("读取数据集失败"));
+		return;
+	}
+	CString str;
+	int i = 0;
+	while (row = mysql_fetch_row(result))
+	{
+		str.Format(_T("%s"), row[0]);
+		m_list2.InsertItem(i, str);
+		str.Format(_T("%s"), row[1]);
+		int j = 1;
+		m_list2.SetItemText(i, j, str);
+		i++;
+	}
+}
+
+
+void CList2Dlg::OnBnClickedRadio2()
+{
+	// TODO: 在此添加控件通知处理程序代码
+	char * ch_select;
+	GetDlgItem(IDC_EDIT_SELECT)->GetWindowText(abc);
+
+	sprintf_s(buf, "SELECT user_id，user_second_sum from sssss where user_name = '%s'", abc);
+	if (0 == mysql_query(&m_sqlconn, buf))
+	{
+		AfxMessageBox(_T("查询数据成功"));
+	}
+	else
+	{
+		AfxMessageBox(_T("查询数据失败"));
+		CString  ee = mysql_error(&m_sqlconn);
+		AfxMessageBox(ee);
+		mysql_close(&m_sqlconn);
+		return;
+	}
+
+	if (!(result = mysql_use_result(&m_sqlconn)))
+	{
+		AfxMessageBox(_T("读取数据集失败"));
+		return;
+	}
+	CString str;
+	int i = 0;
+	while (row = mysql_fetch_row(result))
+	{
+		str.Format(_T("%s"), row[0]);
+		m_list2.InsertItem(i, str);
+		str.Format(_T("%s"), row[1]);
+		int j = 1;
+		m_list2.SetItemText(i, j, str);
+		i++;
+	}
 }
